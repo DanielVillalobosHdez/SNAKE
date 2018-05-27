@@ -127,9 +127,10 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 			}
 			snake.push(addPoint);
 			PlaceFruit();
+			PlaceObst();
 			
 		} else if (newPoint.x < 0 || newPoint.x > (Grid_Width -1)) {
-			GenerateSnake();		
+			GenerateSnake();
 			return;
 		} else if (newPoint.y < 0 || newPoint.y > (Grid_Height -1)) {
 			GenerateSnake();
@@ -139,6 +140,8 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 			return;
 		} else if(newPoint.equals(Obst)) {
 			GenerateSnake();
+			PlaceFruit();
+			PlaceObst();
 			return;
 		}
 			
