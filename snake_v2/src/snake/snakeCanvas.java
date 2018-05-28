@@ -27,36 +27,60 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 	private int direction = Direction.No_direction; 
 	
 	private Thread runThread;
-	private Graphics globalGraphics;
+	//private Graphics globalGraphics;
 	private int score = 0;
 	
-	
-	public void init() {
-		
+	public void init(){
+		//this.addKeyListener(this);
 	}
 	
 	public void paint(Graphics g) {
 		
-		g.setColor(Color.BLACK);
-		g.drawRect(10, 10, Box_Width * Grid_Width, Box_Height * Grid_Height);
+		//g.setColor(Color.BLACK);
+		//g.drawRect(10, 10, Box_Width * Grid_Width, Box_Height * Grid_Height);
 		
 		this.setPreferredSize(new Dimension(640, 480));
-		snake = new LinkedList<Point>();
-		
-		GenerateSnake();
-		PlaceFruit();
-		PlaceObst();
-		
-		globalGraphics = g.create();
 		this.addKeyListener(this);
+		
+		if(snake == null) {
+			snake = new LinkedList<Point>();
+			GenerateSnake();
+			PlaceFruit();
+			PlaceObst();
+		}
+		
+		
+		//globalGraphics = g.create();
+
 		
 		if (runThread == null) {
 			runThread = new Thread(this);
 			runThread.start();			
 		}
 		
-		
+		DrawGrid(g);
+		DrawSnake(g);
+		DrawFruit(g);
+		DrawObst(g);
+		DrawScore(g);
 	}
+	
+	public void update(Graphics g){
+		Graphics offScreenGraphics;
+		BufferedImage offscreen = null;
+		Dimension d = this.getSize();
+		
+		offscreen = new BufferedImage(d.width, d.height, BufferedImage.TYPE_INT_ARGB);
+		offScreenGraphics = offscreen.getGraphics();
+		offScreenGraphics.setColor(this.getBackground());
+		offScreenGraphics.fillRect(0, 0, d.width, d.height);
+		offScreenGraphics.setColor(this.getForeground());
+		paint(offScreenGraphics);
+		
+		
+		g.drawImage(offscreen, 0, 0, this);
+	}
+	
 	
 	public void GenerateSnake() {
 		
@@ -70,20 +94,6 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 		direction = Direction.No_direction;
 	}
 	
-	public void Draw(Graphics g) {
-		g.clearRect(15, 15, Box_Width * Grid_Width+10,Box_Height * Grid_Height + 20);
-		
-		BufferedImage buffer = new BufferedImage(Box_Width * Grid_Width +10,Box_Height * Grid_Height +20, BufferedImage.TYPE_INT_ARGB);
-		Graphics bufferGraphics = buffer.getGraphics();
-		
-		DrawGrid(bufferGraphics);
-		DrawSnake(bufferGraphics);
-		DrawFruit(bufferGraphics);
-		DrawObst(bufferGraphics);
-		DrawScore(bufferGraphics);
-		
-		g.drawImage(buffer, 10, 10, Box_Width * Grid_Width +10, Box_Height * Grid_Height + 20, this);
-	}
 	
 	public void Move(){
 		
@@ -209,8 +219,8 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 	
 	public void PlaceObst() {
 		Random rand = new Random();
-		int randomX = rand.nextInt(Grid_Width)+1;
-		int randomY = rand.nextInt(Grid_Height)+1;
+		int randomX = rand.nextInt(Grid_Width);
+		int randomY = rand.nextInt(Grid_Height);
 		Point randomPoint = new Point(randomX,randomY);
 		while(snake.contains(randomPoint) && fruit != randomPoint) {
 			randomX = rand.nextInt(Grid_Width);
@@ -224,7 +234,7 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 	public void run() {
 		while(true) {
 			Move();
-			Draw(globalGraphics);
+			repaint();
 			
 			try {
 				Thread.currentThread();
