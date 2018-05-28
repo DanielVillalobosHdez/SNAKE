@@ -133,9 +133,13 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 			
 		} else if (newPoint.x < 0 || newPoint.x > (Grid_Width -1)) {
 			GenerateSnake();
+			PlaceFruit();
+			PlaceObst();
 			return;
 		} else if (newPoint.y < 0 || newPoint.y > (Grid_Height -1)) {
 			GenerateSnake();
+			PlaceFruit();
+			PlaceObst();
 			return;
 		} else if (snake.contains(newPoint)) {
 			GenerateSnake();
@@ -205,8 +209,8 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 	
 	public void PlaceObst() {
 		Random rand = new Random();
-		int randomX = rand.nextInt(Grid_Width);
-		int randomY = rand.nextInt(Grid_Height);
+		int randomX = rand.nextInt(Grid_Width)+1;
+		int randomY = rand.nextInt(Grid_Height)+1;
 		Point randomPoint = new Point(randomX,randomY);
 		while(snake.contains(randomPoint) && fruit != randomPoint) {
 			randomX = rand.nextInt(Grid_Width);
