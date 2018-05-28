@@ -1,3 +1,5 @@
+//code inspired by the snake of BrandonioProductions
+
 package snake;
 
 import java.applet.Applet;
