@@ -165,7 +165,15 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 	}
 	
 	public void DrawScore(Graphics g) {
-		g.drawString("Score: " + score, 0, Grid_Height * Box_Height + 20);
+		g.drawString("Score: " + score, 10, Grid_Height * Box_Height + 20);
+		g.setColor(Color.RED);
+		g.fillOval(10, Grid_Height * Box_Height + 60, Grid_Width, Grid_Height);
+		g.setColor(Color.BLACK);
+		g.setColor(Color.YELLOW);
+		g.fillOval(70, Grid_Height * Box_Height + 60, Grid_Width, Grid_Height);
+		g.setColor(Color.BLACK);
+		g.drawString("Fruit     Obstacles", 10, Grid_Height * Box_Height + 55);
+		
 	}
 	
 	public void DrawGrid(Graphics g) {
