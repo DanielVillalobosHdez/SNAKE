@@ -6,20 +6,32 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.*;
+import java.awt.image.*;
+import java.awt.MediaTracker;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
+import java.awt.image.ImageProducer;
 import java.util.LinkedList;
 import java.util.Random;
+
+import com.sun.media.sound.Toolkit;
 
 
 public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 
-	private final int Box_Height = 15;
-	private final int Box_Width = 15;
-	private final int Grid_Height = 25;
-	private final int Grid_Width = 25; 
+	Image fruits;
+	Image logo;
+	Image obstacle;
+	Image fondo;
+	
+	private final int Box_Height = 25;
+	private final int Box_Width = 25;
+	private final int Grid_Height = 30;
+	private final int Grid_Width = 30; 
 	
 	private LinkedList<Point> snake;
 	private Point fruit;
@@ -30,6 +42,29 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 	//private Graphics globalGraphics;
 	private int score = 0;
 	
+	public snakeCanvas() {
+		MediaTracker media = new MediaTracker(this);
+		fruits = getToolkit().getImage("manzana_sprite.png");
+		media.addImage(fruits, 0);
+		MediaTracker media1 = new MediaTracker(this);
+		logo = getToolkit().getImage("logo.png");
+		media1.addImage(logo, 0);
+		MediaTracker media2 = new MediaTracker(this);
+		obstacle = getToolkit().getImage("bush_0.png");
+		media2.addImage(obstacle, 0);
+		MediaTracker media3 = new MediaTracker(this);
+		fondo= getToolkit().getImage("fondo.jpg");
+		media3.addImage(fondo, 0);
+		try {
+			media.waitForID(0);
+		}
+		catch (Exception e) {}
+	}
+	
+	public void ImageCanvas(ImageProducer imageProducer) {
+		fruits = createImage(imageProducer);
+	}
+	
 	public void init(){
 		//this.addKeyListener(this);
 	}
@@ -39,7 +74,7 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 		//g.setColor(Color.BLACK);
 		//g.drawRect(10, 10, Box_Width * Grid_Width, Box_Height * Grid_Height);
 		
-		this.setPreferredSize(new Dimension(640, 480));
+		this.setPreferredSize(new Dimension(1024, 768));
 		this.addKeyListener(this);
 		
 		if(snake == null) {
@@ -165,14 +200,11 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 	}
 	
 	public void DrawScore(Graphics g) {
-		g.drawString("Score: " + score, 10, Grid_Height * Box_Height + 20);
-		g.setColor(Color.RED);
-		g.fillOval(10, Grid_Height * Box_Height + 60, Grid_Width, Grid_Height);
+		g.drawString("Score: " + score, Grid_Width * Box_Width +100 , 200);
+		g.drawImage(logo, Grid_Width * Box_Width +75, 5, 150, 150, this);
+		g.setColor(Color.MAGENTA);
+		g.drawString("Level 1" /*level*/, Grid_Width * Box_Width +100 , 175);
 		g.setColor(Color.BLACK);
-		g.setColor(Color.YELLOW);
-		g.fillOval(70, Grid_Height * Box_Height + 60, Grid_Width, Grid_Height);
-		g.setColor(Color.BLACK);
-		g.drawString("Fruit     Obstacles", 10, Grid_Height * Box_Height + 55);
 		
 	}
 	
@@ -201,15 +233,11 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 	}
 	
 	public void DrawFruit(Graphics g) {
-		g.setColor(Color.RED);
-		g.fillOval(fruit.x  * Box_Width, fruit.y * Box_Height, Box_Width, Box_Height);
-		g.setColor(Color.BLACK);
+		g.drawImage(fruits, fruit.x  * Box_Width, fruit.y * Box_Height, Box_Width+5, Box_Height+5, this);
 	}
 	
 	public void DrawObst(Graphics g) {
-		g.setColor(Color.YELLOW);
-		g.fillOval(Obst.x  * Box_Width, Obst.y * Box_Height, Box_Width, Box_Height);
-		g.setColor(Color.BLACK);
+		g.drawImage(obstacle, Obst.x  * Box_Width, Obst.y * Box_Height, Box_Width, Box_Height, this);
 	}
 	
 	public void PlaceFruit() {
