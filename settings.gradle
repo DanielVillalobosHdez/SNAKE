@@ -1,0 +1,3 @@
+rootProject.name = 'grupod.snake'
+include 'grupod.snake'
+
