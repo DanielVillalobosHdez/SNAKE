@@ -27,6 +27,7 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 	Image logo;
 	Image obstacle;
 	Image fondo;
+	Image cabeza1;
 	
 	private final int Box_Height = 25;
 	private final int Box_Width = 25;
@@ -37,24 +38,34 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 	private Point fruit;
 	private Point Obst;
 	private int direction = Direction.No_direction; 
+	private int size = 3;
 	
 	private Thread runThread;
 	//private Graphics globalGraphics;
 	private int score = 0;
+	private boolean pausa = false;
 	
 	public snakeCanvas() {
+		
 		MediaTracker media = new MediaTracker(this);
 		fruits = getToolkit().getImage("manzana_sprite.png");
 		media.addImage(fruits, 0);
+		
 		MediaTracker media1 = new MediaTracker(this);
 		logo = getToolkit().getImage("logo.png");
 		media1.addImage(logo, 0);
+		
 		MediaTracker media2 = new MediaTracker(this);
 		obstacle = getToolkit().getImage("bush_0.png");
 		media2.addImage(obstacle, 0);
+		
 		MediaTracker media3 = new MediaTracker(this);
 		fondo= getToolkit().getImage("fondo.jpg");
 		media3.addImage(fondo, 0);
+		
+		MediaTracker media4 = new MediaTracker(this);
+		cabeza1 = getToolkit().getImage("srpriteserpienteA.png");
+		media4.addImage(cabeza1, 0);
 		try {
 			media.waitForID(0);
 		}
@@ -63,6 +74,10 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 	
 	public void ImageCanvas(ImageProducer imageProducer) {
 		fruits = createImage(imageProducer);
+		logo = createImage(imageProducer);
+		obstacle = createImage(imageProducer);
+		fondo = createImage(imageProducer);
+		cabeza1 = createImage(imageProducer);
 	}
 	
 	public void init(){
@@ -119,19 +134,17 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 	
 	public void GenerateSnake() {
 		
-		score = 0;
+		if(pausa == false)
+			score = 0;
 		snake.clear();
 		
-		
-		snake.add(new Point(Grid_Width/2,Grid_Height/2-2));
-		snake.add(new Point(Grid_Width/2,Grid_Height/2-1));
-		snake.add(new Point(Grid_Width/2,Grid_Height/2));
+		for(int i = 0; i<size; i++)
+		snake.add(new Point(Grid_Width/2+i,Grid_Height/2));
 		direction = Direction.No_direction;
 	}
 	
-	
 	public void Move(){
-		
+			
 		Point head = snake.peekFirst();
 		Point newPoint = head;
 		
@@ -155,6 +168,7 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 		if(newPoint.equals(fruit)){
 			
 			score += 5;
+			size++;
 			
 			Point addPoint = (Point) newPoint.clone();
 			
@@ -177,11 +191,15 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 			PlaceObst();
 			
 		} else if (newPoint.x < 0 || newPoint.x > (Grid_Width -1)) {
+			score = 0;
+			size = 3;
 			GenerateSnake();
 			PlaceFruit();
 			PlaceObst();
 			return;
 		} else if (newPoint.y < 0 || newPoint.y > (Grid_Height -1)) {
+			score = 0;
+			size = 3;
 			GenerateSnake();
 			PlaceFruit();
 			PlaceObst();
@@ -190,6 +208,8 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 			GenerateSnake();
 			return;
 		} else if(newPoint.equals(Obst)) {
+			score = 0;
+			size = 3;
 			GenerateSnake();
 			PlaceFruit();
 			PlaceObst();
@@ -201,6 +221,7 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 	
 	public void DrawScore(Graphics g) {
 		g.drawString("Score: " + score, Grid_Width * Box_Width +100 , 200);
+		g.drawString("Size: " + size, Grid_Width * Box_Width +100 , 225);
 		g.drawImage(logo, Grid_Width * Box_Width +75, 5, 150, 150, this);
 		g.setColor(Color.MAGENTA);
 		g.drawString("Level 1" /*level*/, Grid_Width * Box_Width +100 , 175);
@@ -224,10 +245,17 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 	}
 	
 	public void DrawSnake(Graphics g) {
+		int color = 0;
 		
-		g.setColor(Color.BLUE);
 		for(Point p : snake) {
-			g.fillRect(p.x * Box_Width, p.y * Box_Height, Box_Width, Box_Height);
+			if(color == 0) { 
+				g.setColor(Color.CYAN);
+				color++;
+			} else {
+				g.setColor(Color.MAGENTA);
+				color--;
+			}
+			g.fillOval(p.x * Box_Width, p.y * Box_Height, Box_Width, Box_Height);
 		}
 		g.setColor(Color.BLACK);
 	}
@@ -274,7 +302,7 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 			
 			try {
 				Thread.currentThread();
-				Thread.sleep(100);
+				Thread.sleep(150);
 			}
 			catch(Exception e) {
 				e.printStackTrace();
@@ -307,6 +335,10 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 			case KeyEvent.VK_D:
 				if(direction != Direction.Izquierda)
 					direction = Direction.Derecha;
+				break;
+			case KeyEvent.VK_P:
+				direction = Direction.No_direction;
+				pausa = true;
 				break;
 		}
 	}
