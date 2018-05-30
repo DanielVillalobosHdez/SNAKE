@@ -43,7 +43,9 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 	private Thread runThread;
 	//private Graphics globalGraphics;
 	private int score = 0;
+	private int level = 1;
 	private boolean pausa = false;
+	private boolean gameover = false;
 	
 	public snakeCanvas() {
 		
@@ -108,7 +110,10 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 			runThread.start();			
 		}
 		
+		
+		
 		DrawGrid(g);
+		g.drawImage(fondo, 0, 0, Grid_Width * Box_Width, Grid_Height * Box_Height, this);
 		DrawSnake(g);
 		DrawFruit(g);
 		DrawObst(g);
@@ -134,13 +139,16 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 	
 	public void GenerateSnake() {
 		
-		if(pausa == false)
+		if(pausa == false && gameover == true)
 			score = 0;
 		snake.clear();
 		
 		for(int i = 0; i<size; i++)
 		snake.add(new Point(Grid_Width/2+i,Grid_Height/2));
 		direction = Direction.No_direction;
+		
+		pausa = false;
+		gameover = false;
 	}
 	
 	public void Move(){
@@ -170,6 +178,28 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 			score += 5;
 			size++;
 			
+			switch (score) {
+				case 50:
+					level++;
+					break;
+				case 100:
+					level++;
+					size = 3;
+					GenerateSnake();
+					break;
+				case 200:
+					level++;
+					size = 3;
+					GenerateSnake();
+					break;
+				case 300:
+					level++;
+					size = 3;
+					GenerateSnake();
+					break;
+			}
+				
+			
 			Point addPoint = (Point) newPoint.clone();
 			
 			switch (direction) {
@@ -193,6 +223,8 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 		} else if (newPoint.x < 0 || newPoint.x > (Grid_Width -1)) {
 			score = 0;
 			size = 3;
+			level = 1;
+			gameover = true;
 			GenerateSnake();
 			PlaceFruit();
 			PlaceObst();
@@ -200,16 +232,26 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 		} else if (newPoint.y < 0 || newPoint.y > (Grid_Height -1)) {
 			score = 0;
 			size = 3;
+			level = 1;
+			gameover = true;
 			GenerateSnake();
 			PlaceFruit();
 			PlaceObst();
 			return;
 		} else if (snake.contains(newPoint)) {
+			score = 0;
+			size = 3;
+			level = 1;
+			gameover = true;
+			/*PlaceFruit();
+			PlaceObst();*/
 			GenerateSnake();
 			return;
 		} else if(newPoint.equals(Obst)) {
 			score = 0;
 			size = 3;
+			level = 1;
+			gameover = true;
 			GenerateSnake();
 			PlaceFruit();
 			PlaceObst();
@@ -220,26 +262,31 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 	}
 	
 	public void DrawScore(Graphics g) {
-		g.drawString("Score: " + score, Grid_Width * Box_Width +100 , 200);
-		g.drawString("Size: " + size, Grid_Width * Box_Width +100 , 225);
+		
+		
+		g.setFont(new Font("TimesRoman", Font.BOLD,(int) 20));
+		g.setColor(Color.ORANGE);
+		g.drawString("Score: " + score, Grid_Width * Box_Width +100 , 215);
+		g.drawString("Size: " + size, Grid_Width * Box_Width +100 , 240);
 		g.drawImage(logo, Grid_Width * Box_Width +75, 5, 150, 150, this);
 		g.setColor(Color.MAGENTA);
-		g.drawString("Level 1" /*level*/, Grid_Width * Box_Width +100 , 175);
+		g.setFont(new Font("TimesRoman", Font.BOLD,(int) 35)); 
+		g.drawString("Level "+ level, Grid_Width * Box_Width +75 , 185);
 		g.setColor(Color.BLACK);
 		
 	}
 	
 	public void DrawGrid(Graphics g) {
-		setBackground(Color.GREEN);
+		setBackground(Color.CYAN);
 		g.setColor(Color.BLACK);
 		g.drawRect(0, 0, Grid_Width * Box_Width, Grid_Height * Box_Height);
 		for (int x = Box_Width; x < Grid_Width * Box_Width; x+= Box_Width) {
-			g.setColor(Color.GREEN);
+			g.setColor(Color.BLACK);
 			g.drawLine(x, 5, x, Grid_Height * Box_Height);
 		}
 		
 		for (int y = Box_Height; y < Grid_Height * Box_Height; y+= Box_Height) {
-			g.setColor(Color.GREEN);
+			g.setColor(Color.BLACK);
 			g.drawLine(5, y, Grid_Width * Box_Width, y);
 		}
 	}
@@ -249,10 +296,10 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 		
 		for(Point p : snake) {
 			if(color == 0) { 
-				g.setColor(Color.CYAN);
+				g.setColor(Color.GREEN);
 				color++;
 			} else {
-				g.setColor(Color.MAGENTA);
+				g.setColor(Color.BLUE);
 				color--;
 			}
 			g.fillOval(p.x * Box_Width, p.y * Box_Height, Box_Width, Box_Height);
@@ -261,10 +308,14 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 	}
 	
 	public void DrawFruit(Graphics g) {
+		if(fruit.x == 0 || fruit.x >= Grid_Width * Box_Width -10 || fruit.y >= Grid_Height * Box_Height -10 || fruit.y == 0)
+			PlaceFruit();
 		g.drawImage(fruits, fruit.x  * Box_Width, fruit.y * Box_Height, Box_Width+5, Box_Height+5, this);
 	}
 	
 	public void DrawObst(Graphics g) {
+		if(Obst.x == 0 || Obst.x >= Grid_Width * Box_Width -1 || Obst.y >= Grid_Height * Box_Height -1 || Obst.y == 0)
+			PlaceObst();
 		g.drawImage(obstacle, Obst.x  * Box_Width, Obst.y * Box_Height, Box_Width, Box_Height, this);
 	}
 	
@@ -301,7 +352,7 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 			repaint();
 			
 			try {
-				Thread.currentThread();
+				Thread.currentThread(); 
 				Thread.sleep(150);
 			}
 			catch(Exception e) {
