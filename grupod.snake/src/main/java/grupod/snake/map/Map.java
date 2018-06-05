@@ -90,6 +90,10 @@ public class Map {
 	{
 		return mapa;
 	}
+	public Tile whatsin(int X, int Y)
+	{
+		return this.mapa[X][Y];
+	}
 
 
 }
