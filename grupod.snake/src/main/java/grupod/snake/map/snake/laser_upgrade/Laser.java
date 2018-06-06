@@ -20,7 +20,7 @@ public class Laser {
         this.initialY =  this.posY = iY;
     }
 
-    boolean check_pcolision(Laser la, Direction pc_dir){
+    boolean check_colision(Laser la, Direction pc_dir){
 
         if(
              asociated_map.whatsin(la.posX,la.posY) != MapTile.Tile.UNFILLED &&
@@ -36,6 +36,9 @@ public class Laser {
     }
 
     void move(Direction dir){
-        //
+
+        if(check_colision(this, this.dir)) {
+
+        }
     }
 }

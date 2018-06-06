@@ -2,7 +2,6 @@ import grupod.snake.map.snake.Segmento;
 import org.junit.*;
 
 import org.junit.Test;
-import sun.misc.ASCIICaseInsensitiveComparator;
 
 
 public class SegmentoTest {

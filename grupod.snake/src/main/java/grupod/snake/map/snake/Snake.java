@@ -128,16 +128,18 @@ public class Snake {
 
     public EXIT_CODE move(Direction new_dir)
     {
-        if( ! check_valid_direction(new_dir))
+        if( ! check_valid_direction(new_dir)) {
             System.out.println("Fuck you");
+            new_dir = this.dir;
+        }
         else
             this.dir = new_dir;
         if( check_colision(Cuerpo.get(0), new_dir) ){
             this.die();
             return EXIT_CODE.DEATH;
         }
-        System.out.println("Cabeza X: "+Cuerpo.get(0).getY()+
-                "Cabeza Y: " +Cuerpo.get(0).getY());
+        //System.out.println("Cabeza X: "+Cuerpo.get(0).getY()+
+        //        "Cabeza Y: " +Cuerpo.get(0).getY());
 
         switch (new_dir) {
             case UP:
