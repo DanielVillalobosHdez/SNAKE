@@ -16,8 +16,6 @@ public class Map {
 	 *
 	 */
 	public Map() {
-		// TODO Auto-generated constructor stub
-
 		this(10,10); // If we don't get dimensions passed, use default ones;
 	}
 	public Map(int dim)
@@ -94,6 +92,10 @@ public class Map {
 	{
 		return this.mapa[X][Y];
 	}
+
+	public void setTile(int X, int Y, Tile type) {
+	    mapa[X][Y]=type;
+    }
 
 
 }

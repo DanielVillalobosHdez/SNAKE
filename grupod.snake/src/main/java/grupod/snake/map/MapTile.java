@@ -1,5 +1,9 @@
 package grupod.snake.map;
 
+/**
+ * @author agarcia
+ *
+ */
 public class MapTile {
 
 	public MapTile() {
@@ -7,6 +11,6 @@ public class MapTile {
 	}
 
 	// Enum of the different tiles we may have
-	public enum Tile {UNFILLED, WALL, FOOD, OBSTACLE, SNAKE};
+	public enum Tile {UNFILLED, WALL, FOOD, OBSTACLE, SNAKE, LASER};
 
 }
