@@ -239,11 +239,11 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 			PlaceObst();
 			return;
 		} else if (snake.contains(newPoint)) {
-			score = 0;
+			/*score = 0;
 			size = 3;
 			level = 1;
 			gameover = true;
-			/*PlaceFruit();
+			PlaceFruit();
 			PlaceObst();*/
 			GenerateSnake();
 			return;
@@ -277,7 +277,7 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 	}
 	
 	public void DrawGrid(Graphics g) {
-		setBackground(Color.CYAN);
+		setBackground(Color.GRAY);
 		g.setColor(Color.BLACK);
 		g.drawRect(0, 0, Grid_Width * Box_Width, Grid_Height * Box_Height);
 		for (int x = Box_Width; x < Grid_Width * Box_Width; x+= Box_Width) {
@@ -292,17 +292,9 @@ public class snakeCanvas extends Canvas implements Runnable, KeyListener {
 	}
 	
 	public void DrawSnake(Graphics g) {
-		int color = 0;
-		
+		g.setColor(Color.GREEN);
 		for(Point p : snake) {
-			if(color == 0) { 
-				g.setColor(Color.GREEN);
-				color++;
-			} else {
-				g.setColor(Color.BLUE);
-				color--;
-			}
-			g.fillOval(p.x * Box_Width, p.y * Box_Height, Box_Width, Box_Height);
+			g.fillRect(p.x * Box_Width, p.y * Box_Height, Box_Width, Box_Height);
 		}
 		g.setColor(Color.BLACK);
 	}
